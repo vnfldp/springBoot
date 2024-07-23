@@ -1,0 +1,6 @@
+사용자이름: mani
+비밀번호 : user
+
+호스트이름: localhost
+포트 : 1521
+SID : xe
