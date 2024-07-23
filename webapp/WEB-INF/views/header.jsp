@@ -25,6 +25,7 @@
       <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
       <li class="nav-item"><a href="/employee/list2" class="nav-link">기본정보</a></li>
       <li class="nav-item"><a href="/EmployeeProjectList" class="nav-link">상세정보</a></li>
+      <li class="nav-item"><a href="/call/list2" class="nav-link">상담내용</a></li>
     </ul>
   </header>
 </div>

@@ -17,20 +17,16 @@
 </script>
     <div class="container mt-5">
         <div class="form-group row">
+				<div class="col-sm-6 input-group input-daterange">
+				    <input type="text" class="form-control" value="2012-04-05">
+				    <div class="input-group-addon">~</div>
+				    <input type="text" class="form-control" value="2012-04-19">
+				</div>
 				<div class="col-sm-2">
 				    <input type="text" class="form-control" id="employeeName" placeholder="개발자명 입력">
 				</div>
 				<div class="col-sm-2">
-				    <input type="text" class="form-control" id="addr" placeholder="주소 입력">
-				</div>
-				<div class="col-sm-2">
-				    <input type="text" class="form-control" id="grade" placeholder="등급 입력">
-				</div>
-				<div class="col-sm-2">
-				    <input type="text" class="form-control" id="projectName" placeholder="프로젝트명 입력">
-				</div>
-				<div class="col-sm-2">
-				    <input type="text" class="form-control" id="dev" placeholder="개발환경 및 언어 입력">
+				    <input type="text" class="form-control" id="note" placeholder="상담내용 입력">
 				</div>
 				<div class="col-sm-2">
 					<button id="btnSel" onclick="getData();return false;" class="btn btn-primary">검색</button>
