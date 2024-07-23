@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.manitech.mapper.CallMapper">
+
+	<select id="selectCallListCnt" parameterType="hashmap" resultType="int">
+		SELECT
+				COUNT( EMPLOYEE_NAME ) AS TOTCNT
+		from TB_CALL_HISTORY
+		where 1=1 
+		<if test='employeeName != null and !employeeName.equals("")'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+		<if test='note != null and !note.equals("")'>
+		and note like '%'||#{note}||'%'
+ 		</if>
+ 		order by REG_DATE desc, HISTORY_ID
+	</select>
+
+	<select id="selectCallList" parameterType="hashmap" resultType="hashmap">
+		select reg_date
+			, employee_name
+			, history_id
+			, note
+			, action
+			, TO_CHAR(regdate, 'YYYY-MM-DD HH24:MI:SS') regdate
+			, regid
+			, TO_CHAR(moddate, 'YYYY-MM-DD HH24:MI:SS') moddate
+			, modid
+		from TB_CALL_HISTORY
+		where 1=1 
+		<if test='employeeName != null and !employeeName.equals("")'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+		<if test='addr != null and !addr.equals("")'>
+		and note like '%'||#{note}||'%'
+ 		</if>
+ 		order by REG_DATE desc, HISTORY_ID
+	</select>
+	
+	<select id="selectCallCnt" parameterType="hashmap" resultType="int">
+		SELECT
+				COUNT( EMPLOYEE_NAME ) AS TOTCNT
+		from TB_CALL_HISTORY
+		where 1=1 
+		<if test='employeeName != null and !employeeName.equals("")'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+ 		order by REG_DATE desc, HISTORY_ID
+	</select>
+
+	<select id="selectCall" parameterType="hashmap" resultType="hashmap">
+		select reg_date
+			, employee_name
+			, history_id
+			, note
+			, action
+			, TO_CHAR(regdate, 'YYYY-MM-DD HH24:MI:SS') regdate
+			, regid
+			, TO_CHAR(moddate, 'YYYY-MM-DD HH24:MI:SS') moddate
+			, modid
+		from TB_CALL_HISTORY
+		where 1=1 
+		<if test='employeeName != null and !employeeName.equals("")'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+ 		order by REG_DATE desc, HISTORY_ID
+	</select>
+	
+	<insert id="insertCall" parameterType="hashmap">
+	    <selectKey keyProperty="no" resultType="int" order="BEFORE">
+	        select count(1) + 1
+	        from TB_CALL_HISTORY
+		where reg_date = to_char(sysdate,'YYYYMMDD')
+		and employee_name = #{employeeName}
+	    </selectKey>
+	    insert into TB_CALL_HISTORY
+	    (reg_date, employee_name, history_id, note, action, regdate, regid)
+	    values
+	    (to_char(sysdate,'YYYYMMDD'), #{employeeName}, #{no}, #{note}, '', SYSDATE, #{regId})
+	</insert>
+	
+	<update id="updateCall" parameterType="hashmap">
+		UPDATE TB_CALL_HISTORY
+		SET note = #{note}
+		    action = #{action}
+		    moddate = SYSDATE
+		    modid = #{regId}
+		WHERE reg_date = #{regDate}
+		  AND employee_name = #{employeeName}
+		  AND history_id = #{historyId}
+	</update>
+	
+	<delete id="deleteCall" parameterType="hashmap">
+		delete from TB_CALL_HISTORY
+		where reg_date = #{regDate}
+		and employee_name = #{employeeName}
+		and history_id = #{historyId}
+	</delete>
+</mapper>

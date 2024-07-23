@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.manitech.mapper.EmployeeProjectMapper">
+<select id="selectEmployeeProjectListCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(EMPLOYEE_NAME) AS TOTCNT
+		  FROM (
+		         SELECT e.*
+		              , p.PROJECT_NAME
+		              , p.CLIENT
+		              , p.DEV_ROLE
+		              , p.DEV_OS
+		              , p.DEV_LANGUAGE
+		              , p.DEV_DBMS
+		              , p.DEV_TOOL
+		              , p.DEV_COMMUNICATION
+		              , p.DEV_WAS
+		              , p.DEV_FRAMEWORK
+		              , p.OTHER_DETAILS
+		           FROM tb_projects p 
+		                LEFT JOIN tb_employees e 
+		                       ON p.employee_name = e.employee_name
+		       ) A
+		 WHERE 1=1 
+		<if test='employeeName != null and !employeeName.equals("")'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+		<if test='addr != null and !addr.equals("")'>
+		and ADDR like '%'||#{addr}||'%'
+ 		</if>
+		<if test='grade != null and !grade.equals("")'>
+		and GRADE like '%'||#{grade}||'%'
+ 		</if>
+		<if test='projectName != null and !projectName.equals("")'>
+		and PROJECT_NAME like '%'||#{projectName}||'%'
+ 		</if>
+		<if test='dev != null and !dev.equals("")'>
+		and (  CLIENT like '%'||#{dev}||'%'
+		        or DEV_LANGUAGE like '%'||#{dev}||'%'
+		        or DEV_DBMS like '%'||#{dev}||'%'
+		        or DEV_TOOL like '%'||#{dev}||'%'
+		        or DEV_COMMUNICATION like '%'||#{dev}||'%'
+		        or DEV_WAS like '%'||#{dev}||'%'
+		        or DEV_FRAMEWORK like '%'||#{dev}||'%'
+		        or OTHER_DETAILS like '%'||#{dev}||'%'
+		        )
+ 		</if>
+ 		ORDER BY employee_name
+	</select>
+
+	<select id="selectEmployeeProjectList" parameterType="hashmap" resultType="hashmap">
+		SELECT DISTINCT 
+		       EMPLOYEE_NAME
+			 , PROJECT_ID
+			 , PROJECT_NAME
+			 , PROJECT_DATE
+			 , START_DATE
+			 , END_DATE
+			 , CLIENT
+			 , COMPANY
+			 , DEV_ROLE
+			 , DEV_OS
+			 , DEV_LANGUAGE
+			 , DEV_DBMS
+			 , DEV_TOOL
+			 , DEV_COMMUNICATION
+			 , DEV_WAS
+			 , DEV_FRAMEWORK
+			 , OTHER_DETAILS
+		  FROM (
+		        SELECT e.*
+		        	 , p.PROJECT_ID
+		             , p.project_name
+		             , p.PROJECT_DATE
+		             , p.START_DATE
+		             , p.END_DATE
+		             , p.CLIENT
+		             , p.COMPANY
+		             , p.DEV_ROLE
+		             , p.DEV_OS
+		             , p.DEV_LANGUAGE
+		             , p.DEV_DBMS
+		             , p.DEV_TOOL
+		             , p.DEV_COMMUNICATION
+		             , p.DEV_WAS
+		             , p.DEV_FRAMEWORK
+		             , p.OTHER_DETAILS
+		          FROM tb_employees e 
+		               LEFT JOIN tb_projects p 
+		                      ON e.employee_name = p.employee_name
+		       ) A
+		 WHERE 1=1 
+		<if test='employeeName != null and !employeeName.equals("")'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+		<if test='addr != null and !addr.equals("")'>
+		and ADDR like '%'||#{addr}||'%'
+ 		</if>
+		<if test='grade != null and !grade.equals("")'>
+		and GRADE like '%'||#{grade}||'%'
+ 		</if>
+		<if test='projectName != null and !projectName.equals("")'>
+		and PROJECT_NAME like '%'||#{projectName}||'%'
+ 		</if>
+		<if test='dev != null and !dev.equals("")'>
+		and (  CLIENT like '%'||#{dev}||'%'
+		        or DEV_LANGUAGE like '%'||#{dev}||'%'
+		        or DEV_DBMS like '%'||#{dev}||'%'
+		        or DEV_TOOL like '%'||#{dev}||'%'
+		        or DEV_COMMUNICATION like '%'||#{dev}||'%'
+		        or DEV_WAS like '%'||#{dev}||'%'
+		        or DEV_FRAMEWORK like '%'||#{dev}||'%'
+		        or OTHER_DETAILS like '%'||#{dev}||'%'
+		        )
+ 		</if>
+ 		ORDER BY employee_name
+	</select>
+</mapper>

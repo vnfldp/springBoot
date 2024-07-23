@@ -24,25 +24,19 @@
 		        on e.employee_name = p.employee_name
 		) 
 		where 1=1 
-		<if test = 'list != null and list.size!=0'>
-			and grade IN
-		    <foreach item="item" index="index" collection="list" open="(" close=")" separator=",">
-		            #{item}
-		    </foreach>
- 		</if>
-		<if test='employeeName != null'>
+		<if test='employeeName != null and !employeeName.equals("")'>
 		and employee_name like '%'||#{employeeName}||'%'
  		</if>
-		<if test='addr != null'>
+		<if test='addr != null and !addr.equals("")'>
 		and ADDR like '%'||#{addr}||'%'
  		</if>
-		<if test='grade != null'>
+		<if test='grade != null and !grade.equals("")'>
 		and GRADE like '%'||#{grade}||'%'
  		</if>
-		<if test='projectName != null'>
+		<if test='projectName != null and !projectName.equals("")'>
 		and PROJECT_NAME like '%'||#{projectName}||'%'
  		</if>
-		<if test='dev != null'>
+		<if test='dev != null and !dev.equals("")'>
 		and (  CLIENT like '%'||#{dev}||'%'
 		        or DEV_LANGUAGE like '%'||#{dev}||'%'
 		        or DEV_DBMS like '%'||#{dev}||'%'
@@ -72,6 +66,8 @@
 		       , COSA_YN
 		       , GISA_YN
 		       , REMARKS
+		       , (SELECT COUNT(1) FROM tb_projects WHERE employee_name = A.employee_name) PRJ_CNT
+		       , (SELECT COUNT(1) FROM TB_CALL_HISTORY WHERE employee_name = A.employee_name) CALL_CNT
 		from (
 		    select e.*
 		        , p.project_name
@@ -88,27 +84,21 @@
 		    from tb_employees e 
 		     left join  tb_projects p 
 		        on e.employee_name = p.employee_name
-		) 
+		) A
 		where 1=1 
-		<if test = 'list != null and list.size!=0'>
-			and grade IN
-		    <foreach item="item" index="index" collection="list" open="(" close=")" separator=",">
-		            #{item}
-		    </foreach>
- 		</if>
-		<if test='employeeName != null'>
+		<if test='employeeName != null and !employeeName.equals("")'>
 		and employee_name like '%'||#{employeeName}||'%'
  		</if>
-		<if test='addr != null'>
+		<if test='addr != null and !addr.equals("")'>
 		and ADDR like '%'||#{addr}||'%'
  		</if>
-		<if test='grade != null'>
+		<if test='grade != null and !grade.equals("")'>
 		and GRADE like '%'||#{grade}||'%'
  		</if>
-		<if test='projectName != null'>
+		<if test='projectName != null and !projectName.equals("")'>
 		and PROJECT_NAME like '%'||#{projectName}||'%'
  		</if>
-		<if test='dev != null'>
+		<if test='dev != null and !dev.equals("")'>
 		and (  CLIENT like '%'||#{dev}||'%'
 		        or DEV_LANGUAGE like '%'||#{dev}||'%'
 		        or DEV_DBMS like '%'||#{dev}||'%'
@@ -122,4 +112,80 @@
  		order by employee_name
 	</select>
 
+	<select id="selectEmployeeProjectListCnt" parameterType="hashmap" resultType="int">
+		SELECT
+				COUNT(EMPLOYEE_NAME ) AS TOTCNT
+		from tb_projects p 
+		where 1=1 
+		<if test='employeeName != null'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+ 		order by EMPLOYEE_NAME, PROJECT_ID, PROJECT_NAME
+	</select>
+
+	<select id="selectEmployeeProjectList" parameterType="hashmap" resultType="hashmap">
+		select  EMPLOYEE_NAME
+			, PROJECT_ID
+			, PROJECT_NAME
+			, PROJECT_DATE
+			, START_DATE
+			, END_DATE
+			, CLIENT
+			, COMPANY
+			, DEV_ROLE
+			, DEV_OS
+			, DEV_LANGUAGE
+			, DEV_DBMS
+			, DEV_TOOL
+			, DEV_COMMUNICATION
+			, DEV_WAS
+			, DEV_FRAMEWORK
+			, OTHER_DETAILS
+		from tb_projects p 
+		where 1=1 
+		<if test='employeeName != null'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+ 		order by EMPLOYEE_NAME, PROJECT_ID, PROJECT_NAME
+	</select>
+	
+	<select id="selectEmployeeNoteListCnt" parameterType="hashmap" resultType="int">
+		SELECT
+				COUNT(EMPLOYEE_NAME ) AS TOTCNT
+		from TB_CALL_HISTORY p 
+		where 1=1 
+		<if test='employeeName != null'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+ 		order by REG_DATE desc, HISTORY_ID
+	</select>
+
+	<select id="selectEmployeeNoteList" parameterType="hashmap" resultType="hashmap">
+		select  REG_DATE
+			, EMPLOYEE_NAME
+			, HISTORY_ID
+			, NOTE
+			, ACTION
+			, TO_CHAR(REGDATE, 'YYYY-MM-DD HH24:MI:SS') REGDATE
+			, REGID
+		from TB_CALL_HISTORY p 
+		where 1=1 
+		<if test='employeeName != null'>
+		and employee_name like '%'||#{employeeName}||'%'
+ 		</if>
+ 		order by REG_DATE desc, HISTORY_ID
+	</select>
+	
+	<insert id="insertEmployeeCallSave" parameterType="hashmap">
+	    <selectKey keyProperty="no" resultType="int" order="BEFORE">
+	        select count(1) + 1
+	        from TB_CALL_HISTORY
+		where reg_date = to_char(sysdate,'YYYYMMDD')
+		and employee_name = #{employeeName}
+	    </selectKey>
+	    insert into TB_CALL_HISTORY
+	    (reg_date, employee_name, history_id, note, action, regdate, regid)
+	    values
+	    (to_char(sysdate,'YYYYMMDD'), #{employeeName}, #{no}, #{note}, '', SYSDATE, #{regId})
+	</insert>
 </mapper>
